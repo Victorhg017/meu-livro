@@ -1,0 +1,643 @@
+:root {
+    --cor-fundo-principal: #212529;
+    --cor-fundo-secundario: #343a40;
+    --cor-texto-principal: #f8f9fa;
+    --cor-acento-dourado: #ffd700;
+    --cor-separador: #6c757d;
+    --cor-borda: #495057;
+}
+
+body {
+    font-family: 'IM Fell DW Pica', serif;
+    background-color: var(--cor-fundo-principal);
+    color: var(--cor-texto-principal);
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* Base das fontes */
+h1, h2, h3, h4, .logo {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    color: var(--cor-acento-dourado);
+}
+
+
+/* Estilos para o cabeçalho e submenu */
+.cabecalho nav ul {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+}
+.cabecalho nav ul li a,
+.cabecalho nav ul li a:visited {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  cursor: pointer;
+}
+.cabecalho nav ul li a:hover,
+.cabecalho nav ul li a:focus {
+  text-decoration: underline;
+  outline: none;
+}
+
+/* Submenu deslizando de cima para baixo */
+.submenu-livro {
+  position: absolute;
+  top: 10%; /* logo abaixo do header */
+  left: 50%;
+  right: 20%;
+  border-radius: 5px;
+  background: #333;
+  color: white;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  z-index: 1001;
+  padding: 0 2rem;
+}
+
+/* Quando aberto */
+.submenu-livro.open {
+  max-height: 100px; /* ajuste conforme conteúdo */
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  overflow-y: auto;
+}
+
+/* Botão fechar */
+#closeSubmenuBtn {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+  float: right;
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+/* Lista do submenu */
+.submenu-livro ul {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 0;
+}
+.submenu-livro ul li {
+  margin-bottom: 0.75rem;
+}
+.submenu-livro ul li a {
+  color: white;
+  text-decoration: none;
+  font-size: 1.1rem;
+  display: block;
+  padding: 0.3rem 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+.submenu-livro ul li a:hover,
+.submenu-livro ul li a:focus {
+  background: #555;
+  outline: none;
+}
+
+/* Overlay */
+#overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 1000;
+}
+#overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+
+
+/* --- Cabeçalho --- */
+.cabecalho {
+    background-color: var(--cor-fundo-secundario);
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--cor-borda);
+}
+
+.cabecalho .logo {
+    font-size: 1.8em;
+    letter-spacing: 2px;
+}
+
+.cabecalho nav ul {
+    list-style: none; 
+    padding: 0px;
+    margin: 0px 10px 0 0;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.cabecalho nav li {
+    position: relative;
+}
+
+/* Adiciona um separador entre os itens do menu, exceto o último */
+.cabecalho nav li:not(:last-child)::after {
+    content: "•";
+    position: absolute;
+    right: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--cor-acento-dourado);
+    font-size: 1.2em;
+}
+
+.cabecalho nav a {
+    text-decoration: none;
+    color: var(--cor-texto-principal);
+    font-size: 1em;
+    transition: color 0.3s ease;
+    padding: 0% 5px ;
+}
+
+.cabecalho nav a:hover {
+    color: var(--cor-acento-dourado);
+}
+
+/* --- Conteúdo Principal --- */
+.conteudo {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.secao-padrao, .secao-livro, .secao-cards {
+    margin-bottom: 80px;
+}
+
+/* --- Seção "O Livro" --- */
+.banner-hero {
+    background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExZzlsYWpleWZzaGVxbWFqOWRpN3ZlbWtzdnJvNjZteTcxbHp5N3FtcSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/YqWY5lf3cWxaQNChdj/giphy.gif');
+    background-size: cover;
+    background-position: center;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+    margin-bottom: 40px;
+}
+
+.banner-hero h2 {
+    font-size: 3em;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.btn-explorar {
+    background-color: var(--cor-acento-dourado);
+    color: #333;
+    text-decoration: none;
+    padding: 15px 30px;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    border-radius: 5px;
+    transition: transform 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.btn-explorar:hover {
+    transform: translateY(-3px);
+}
+
+.sinopse {
+    display: flex;
+    align-items: flex-start;
+    gap: 40px;
+    background-color: var(--cor-fundo-secundario);
+    padding: 30px;
+    border-radius: 10px;
+    border-left: 5px solid var(--cor-acento-dourado);
+}
+
+.capa img {
+    max-width: 250px;
+    border: 3px solid var(--cor-borda);
+    border-radius: 5px;
+}
+
+.texto-sinopse h3 {
+    margin-top: 0;
+    font-size: 2em;
+}
+
+/* --- Seções de Cards --- */
+.secao-cards {
+    text-align: center;
+}
+
+.secao-cards h2 {
+    font-size: 2.5em;
+    margin-bottom: 30px;
+}
+
+.cards-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.card-item {
+    background-color: var(--cor-fundo-secundario);
+    border: 1px solid var(--cor-borda);
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--cor-texto-principal);
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+    width: 200px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.card-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+}
+
+.card-item img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border: 2px solid var(--cor-acento-dourado);
+}
+
+.card-item h3 {
+    margin: 0;
+    color: var(--cor-acento-dourado);
+}
+
+/* --- Detalhes Interativos (Efeito :target) --- */
+.detalhes-interativos {
+    margin-top: 80px;
+}
+
+.painel-detalhes {
+    display: none;
+    background-color: var(--cor-fundo-secundario);
+    padding: 40px;
+    border-radius: 10px;
+    border-left: 5px solid var(--cor-acento-dourado);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.painel-detalhes:target {
+    display: block;
+}
+
+.painel-detalhes img {
+    margin-top: 0px;
+    border-color: none;
+}
+
+.detalhes-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border-bottom: 1px solid var(--cor-borda);
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
+
+.detalhes-header img {
+    border-radius: 50%;
+    border: 3px solid var(--cor-acento-dourado);
+}
+
+.detalhes-header h4 {
+    margin: 0;
+    font-size: 2.2em;
+}
+
+.detalhes-corpo {
+    display: flex;
+    gap: 40px;
+    flex-direction: column;
+}
+
+@media (min-width: 768px) {
+    .detalhes-corpo {
+        flex-direction: row;
+    }
+}
+
+.info-lateral {
+    flex-basis: 300px;
+    flex-shrink: 0;
+    padding: 20px;
+    background-color: #2a3035;
+    border-radius: 8px;
+    border: 1px dashed var(--cor-acento-dourado);
+}
+
+.info-lateral p {
+    margin: 0 0 10px 0;
+}
+
+.historia-principal {
+    flex-grow: 1;
+    text-align: justify;
+}
+
+/* --- Rodapé --- */
+.rodape {
+    text-align: center;
+    padding: 20px;
+    background-color: var(--cor-fundo-secundario);
+    margin-top: 40px;
+    border-top: 2px solid var(--cor-borda);
+    font-size: 0.9em;
+}
+
+/* --- Painel de Livro (Inline Page) --- */
+.painel-livro {
+    background-color: #2a3035; /* Fundo que se destaca do principal */
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    margin: 40px auto;
+}
+
+/* Mostra o painel quando a URL aponta para sua ID */
+.painel-livro:target {
+    display: block;
+}
+
+.livro-container {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+@media (min-width: 768px) {
+    .livro-container {
+        flex-direction: row;
+    }
+}
+
+.livro-capa {
+    flex-shrink: 0;
+    text-align: center;
+    width: 250px;
+}
+
+.livro-capa img {
+    width: 100%;
+    height: auto;
+    border: 3px solid var(--cor-borda);
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.livro-capa h3 {
+    margin-top: 15px;
+    font-size: 1.5em;
+    color: var(--cor-acento-dourado);
+}
+
+.livro-conteudo {
+    display: flex;
+    flex-grow: 1;
+    gap: 40px;
+    flex-direction: column;
+}
+
+.info-lateral {
+    flex-basis: 300px;
+    flex-shrink: 0;
+    background-color: var(--cor-fundo-principal);
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px dashed var(--cor-acento-dourado);
+}
+
+.info-lateral h4 {
+    margin-top: 0;
+    border-bottom: 1px solid var(--cor-borda);
+    padding-bottom: 10px;
+}
+
+.info-lateral ul {
+    list-style: none;
+    padding: 0;
+}
+
+.info-lateral li {
+    margin-bottom: 10px;
+}
+
+.info-lateral a {
+    text-decoration: none;
+    color: var(--cor-texto-principal);
+    transition: color 0.3s ease;
+}
+
+.info-lateral a:hover {
+    color: var(--cor-acento-dourado);
+}
+
+.historia-principal {
+    flex-grow: 1;
+    text-align: justify;
+}
+
+
+/* Para tablets e telas médias (até 1024px) */
+@media (max-width: 1024px) {
+  .cabecalho {
+    padding: 15px 20px;
+  }
+
+  .cabecalho nav ul {
+    gap: 10px;
+  }
+
+  .cabecalho .logo {
+    font-size: 1.6em;
+  }
+
+  .conteudo {
+    max-width: 90%;
+    margin: 30px auto;
+    padding: 0 15px;
+  }
+
+  .banner-hero {
+    height: 300px;
+  }
+
+  .banner-hero h2 {
+    font-size: 2.5em;
+  }
+
+  .btn-explorar {
+    padding: 12px 25px;
+    font-size: 1em;
+  }
+
+  .sinopse {
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .capa img {
+    max-width: 100%;
+    border-width: 2px;
+  }
+
+  .texto-sinopse h3 {
+    font-size: 1.8em;
+  }
+
+  .secao-cards {
+    margin-bottom: 60px;
+  }
+
+  .cards-container {
+    gap: 20px;
+  }
+
+  .card-item {
+    width: 45%;
+    padding: 15px;
+  }
+
+  .card-item h3 {
+    font-size: 1.2em;
+  }
+
+  .detalhes-corpo {
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  .info-lateral {
+    flex-basis: 100%;
+    padding: 15px;
+  }
+
+  .historia-principal {
+    text-align: left;
+  }
+
+  .livro-container {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .livro-capa {
+    width: 100%;
+  }
+
+  .livro-capa img {
+    max-width: 100%;
+  }
+
+  .livro-conteudo {
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  .info-lateral {
+    flex-basis: 100%;
+  }
+}
+
+/* Para celulares (até 600px) */
+@media (max-width: 600px) {
+  .cabecalho {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 15px 15px;
+  }
+
+  .cabecalho .logo {
+    font-size: 1.4em;
+    margin-bottom: 10px;
+  }
+
+  .cabecalho nav ul {
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .cabecalho nav li:not(:last-child)::after {
+    content: none; /* remove separadores */
+  }
+
+  .cabecalho nav a {
+    font-size: 1.1em;
+    padding: 8px 0;
+    display: block;
+    width: 100%;
+  }
+
+  .conteudo {
+    max-width: 100%;
+    margin: 20px auto;
+    padding: 0 10px;
+  }
+
+  .banner-hero {
+    height: 220px;
+  }
+
+  .banner-hero h2 {
+    font-size: 2em;
+  }
+
+  .btn-explorar {
+    padding: 10px 20px;
+    font-size: 0.95em;
+  }
+
+  .sinopse {
+    padding: 15px;
+    gap: 15px;
+  }
+
+  .card-item {
+    width: 100%;
+    padding: 12px;
+  }
+
+  .detalhes-corpo {
+    gap: 15px;
+  }
+
+  .info-lateral {
+    padding: 15px;
+  }
+
+  .livro-capa {
+    width: 100%;
+  }
+
+  .livro-conteudo {
+    gap: 20px;
+  }
+}
