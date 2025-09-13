@@ -467,7 +467,8 @@ h1, h2, h3, h4, .logo {
 /* Para tablets e telas médias (até 1024px) */
 @media (max-width: 1024px) {
   .cabecalho {
-    padding: 15px 20px;
+    padding: 10px 20px;
+  
   }
 
   .cabecalho nav ul {
@@ -475,7 +476,7 @@ h1, h2, h3, h4, .logo {
   }
 
   .cabecalho .logo {
-    font-size: 1.6em;
+    font-size: 1em;
   }
 
   .conteudo {
