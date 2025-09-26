@@ -22,155 +22,6 @@ h1, h2, h3, h4, .logo {
     color: var(--cor-acento-dourado);
 }
 
-
-/* Estilos para o cabeçalho e submenu */
-.cabecalho nav ul {
-  list-style: none;
-  display: flex;
-  gap: 1.5rem;
-}
-.cabecalho nav ul li a,
-.cabecalho nav ul li a:visited {
-  color: white;
-  text-decoration: none;
-  font-weight: 500;
-  cursor: pointer;
-}
-.cabecalho nav ul li a:hover,
-.cabecalho nav ul li a:focus {
-  text-decoration: underline;
-  outline: none;
-}
-
-/* Submenu deslizando de cima para baixo */
-.submenu-livro {
-  position: absolute;
-  top: 10%; /* logo abaixo do header */
-  left: 50%;
-  right: 20%;
-  border-radius: 5px;
-  background: #333;
-  color: white;
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.35s ease;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  z-index: 1001;
-  padding: 0 2rem;
-}
-
-/* Quando aberto */
-.submenu-livro.open {
-  max-height: 100px; /* ajuste conforme conteúdo */
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  overflow-y: auto;
-}
-
-/* Botão fechar */
-#closeSubmenuBtn {
-  background: transparent;
-  border: none;
-  color: white;
-  font-size: 2rem;
-  cursor: pointer;
-  float: right;
-  margin-bottom: 0.5rem;
-  line-height: 1;
-}
-
-/* Lista do submenu */
-.submenu-livro ul {
-  list-style: none;
-  padding-left: 0;
-  margin-top: 0;
-}
-.submenu-livro ul li {
-  margin-bottom: 0.75rem;
-}
-.submenu-livro ul li a {
-  color: white;
-  text-decoration: none;
-  font-size: 1.1rem;
-  display: block;
-  padding: 0.3rem 0.5rem;
-  border-radius: 4px;
-  transition: background-color 0.2s;
-}
-.submenu-livro ul li a:hover,
-.submenu-livro ul li a:focus {
-  background: #555;
-  outline: none;
-}
-
-/* Overlay */
-#overlay {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.4);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-  z-index: 1000;
-}
-#overlay.active {
-  opacity: 1;
-  pointer-events: all;
-}
-
-
-
-/* --- Cabeçalho --- */
-.cabecalho {
-    background-color: var(--cor-fundo-secundario);
-    padding: 15px 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 2px solid var(--cor-borda);
-}
-
-.cabecalho .logo {
-    font-size: 1.8em;
-    letter-spacing: 2px;
-}
-
-.cabecalho nav ul {
-    list-style: none; 
-    padding: 0px;
-    margin: 0px 10px 0 0;
-    display: flex;
-    gap: 15px;
-    align-items: center;
-}
-
-.cabecalho nav li {
-    position: relative;
-}
-
-/* Adiciona um separador entre os itens do menu, exceto o último */
-.cabecalho nav li:not(:last-child)::after {
-    content: "•";
-    position: absolute;
-    right: -10px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--cor-acento-dourado);
-    font-size: 1.2em;
-}
-
-.cabecalho nav a {
-    text-decoration: none;
-    color: var(--cor-texto-principal);
-    font-size: 1em;
-    transition: color 0.3s ease;
-    padding: 0% 5px ;
-}
-
-.cabecalho nav a:hover {
-    color: var(--cor-acento-dourado);
-}
-
 /* --- Conteúdo Principal --- */
 .conteudo {
     max-width: 1200px;
@@ -244,6 +95,7 @@ h1, h2, h3, h4, .logo {
 /* --- Seções de Cards --- */
 .secao-cards {
     text-align: center;
+    width: 100%;
 }
 
 .secao-cards h2 {
@@ -467,7 +319,8 @@ h1, h2, h3, h4, .logo {
 /* Para tablets e telas médias (até 1024px) */
 @media (max-width: 1024px) {
   .cabecalho {
-    padding: 15px 20px;
+    padding: 10px 20px;
+  
   }
 
   .cabecalho nav ul {
@@ -475,7 +328,7 @@ h1, h2, h3, h4, .logo {
   }
 
   .cabecalho .logo {
-    font-size: 1.6em;
+    font-size: 1em;
   }
 
   .conteudo {
@@ -497,11 +350,11 @@ h1, h2, h3, h4, .logo {
     font-size: 1em;
   }
 
-  .sinopse {
-    flex-direction: column;
+            .sinopse {
+                flex-direction: column;
     gap: 20px;
     padding: 20px;
-  }
+            }
 
   .capa img {
     max-width: 100%;
@@ -518,7 +371,7 @@ h1, h2, h3, h4, .logo {
 
   .cards-container {
     gap: 20px;
-  }
+            }
 
   .card-item {
     width: 45%;
@@ -529,19 +382,19 @@ h1, h2, h3, h4, .logo {
     font-size: 1.2em;
   }
 
-  .detalhes-corpo {
-    flex-direction: column;
+            .detalhes-corpo {
+                flex-direction: column;
     gap: 25px;
-  }
+            }
 
-  .info-lateral {
+            .info-lateral {
     flex-basis: 100%;
     padding: 15px;
   }
 
   .historia-principal {
     text-align: left;
-  }
+            }
 
   .livro-container {
     flex-direction: column;
@@ -549,7 +402,7 @@ h1, h2, h3, h4, .logo {
   }
 
   .livro-capa {
-    width: 100%;
+                width: 100%;
   }
 
   .livro-capa img {
@@ -572,18 +425,18 @@ h1, h2, h3, h4, .logo {
     flex-direction: column;
     align-items: flex-start;
     padding: 15px 15px;
-  }
+            }
 
   .cabecalho .logo {
     font-size: 1.4em;
     margin-bottom: 10px;
-  }
+            }
 
-  .cabecalho nav ul {
-    flex-direction: column;
+            .cabecalho nav ul {
+                flex-direction: column;
     gap: 8px;
     width: 100%;
-  }
+            }
 
   .cabecalho nav li:not(:last-child)::after {
     content: none; /* remove separadores */
@@ -617,10 +470,10 @@ h1, h2, h3, h4, .logo {
 
   .sinopse {
     padding: 15px;
-    gap: 15px;
-  }
+                gap: 15px;
+            }
 
-  .card-item {
+            .card-item {
     width: 100%;
     padding: 12px;
   }
@@ -639,5 +492,6 @@ h1, h2, h3, h4, .logo {
 
   .livro-conteudo {
     gap: 20px;
-  }
-}
+            }
+        }
+

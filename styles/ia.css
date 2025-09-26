@@ -1,0 +1,185 @@
+
+/* --- CHAT FLUTUANTE --- */
+.chat-fab {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background-color: var(--cor-acento-dourado);
+    color: var(--cor-fundo-principal);
+    border-radius: 50%;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    font-family: 'Cinzel', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+}
+.chat-fab:hover {
+    transform: scale(1.1);
+}
+
+.chat-modal-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.chat-modal-container.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.chat-modal-content {
+    background-color: var(--cor-fundo-secundario);
+    border-radius: 12px;
+    border: 2px solid var(--cor-acento-dourado);
+    padding: 20px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+.chat-modal-container.open .chat-modal-content {
+    transform: scale(1);
+}
+
+.chat-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--cor-acento-dourado);
+    padding-bottom: 10px;
+}
+
+.chat-modal-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.chat-close-btn {
+    background: none;
+    border: none;
+    color: var(--cor-texto-principal);
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+.chat-modal-body .input-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+ .chat-modal-body .input-group input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 2px solid var(--cor-acento-dourado);
+    background-color: var(--cor-fundo-principal);
+    color: var(--cor-texto-principal);
+    font-family: 'IM Fell DW Pica', serif;
+    font-size: 1.1rem;
+    box-sizing: border-box;
+ }
+.chat-modal-body .gemini-button {
+    margin: 0;
+}
+.gemini-output {
+    max-height: 200px; /* Define uma altura máxima */
+    overflow-y: auto;  /* Adiciona uma barra de rolagem se o texto for maior */
+}
+
+/* --- RESPONSIVIDADE --- */
+@media (max-width: 900px) {
+    .personagem-display-card {
+        flex-direction: column;
+        align-items: center;
+        max-width: 400px;
+    }
+    .personagem-imagem-container {
+        flex: 0 0 auto;
+        width: 100%;
+        max-width: 250px;
+    }
+    .personagem-imagem-container img {
+        height: 300px;
+    }
+    .armas-carrossel-wrapper {
+        height: 450px;
+    }
+    #btn-arma-prev { left: 5%; }
+    #btn-arma-next { right: 5%; }
+}
+
+@media (max-width: 600px) {
+    body {
+        font-size: 14px;
+    }
+    main {
+        padding: 0 10px;
+        margin-top: 20px;
+    }
+    section {
+        padding: 20px 15px;
+    }
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.5rem; }
+
+    /* Mapa */
+    #mapa-container {
+        height: 300px;
+    }
+    #mapa-container::after {
+        font-size: 0.8rem;
+        bottom: 10px;
+        right: 10px;
+    }
+    
+    /* Personagens */
+    .personagem-thumb {
+        width: 60px;
+        height: 60px;
+    }
+
+    /* Armas */
+    .armas-carrossel-wrapper {
+        height: 400px;
+        perspective: 800px;
+    }
+    .ficha-arma {
+        width: 280px;
+        padding: 20px;
+    }
+    #btn-arma-prev { left: 0; }
+    #btn-arma-next { right: 0; }
+
+    /* Chat */
+    .chat-fab {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+        bottom: 20px;
+        right: 20px;
+    }
+    .chat-modal-content {
+        width: 95%;
+        padding: 15px;
+    }
+}

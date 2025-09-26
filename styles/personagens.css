@@ -1,0 +1,164 @@
+
+/* --- Variáveis de Cor e Estilos Gerais --- */
+:root {
+    --cor-fundo: #000000;
+    --cor-card: #1B2133;
+    --cor-texto: #E0E0E0;
+    --cor-destaque: #53065a;
+    --cor-brilho-destaque: #53065a;
+}
+
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    text-align: center;
+}
+
+h1, h2, h3 {
+    color: var(--cor-texto);
+    text-shadow: 0 0 10px var(--cor-brilho-destaque);
+    font-weight: 700;
+}
+
+h2 {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    font-size: 2.5rem;
+}
+
+/* --- Carrossel Externo: Navegação --- */
+.personagens-nav {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.nav-btn {
+    background-color: var(--cor-card);
+    color: var(--cor-texto);
+    border: 2px solid var(--cor-card);
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+    background-color: #2a3149;
+}
+
+.nav-btn.active {
+    background-color: var(--cor-destaque);
+    border-color: var(--cor-destaque);
+    box-shadow: 0 0 15px var(--cor-brilho-destaque);
+}
+
+/* --- Carrossel Externo: Conteúdo --- */
+.personagem-card {
+    display: none; /* Esconde todos os cards por padrão */
+    background-color: var(--cor-card);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.personagem-card.active {
+    display: block; /* Mostra apenas o card ativo */
+}
+
+/* --- Carrossel Interno --- */
+.carrossel-interno-container {
+    overflow: hidden; /* Essencial para o efeito do carrossel */
+}
+
+.carrossel-interno-wrapper {
+    display: flex;
+    transition: transform 0.5s ease-in-out; /* Animação de transição */
+}
+
+.slide-interno {
+    min-width: 100%;
+    box-sizing: border-box;
+}
+
+.ficha-tecnica {
+    display: flex;
+    gap: 2rem;
+    text-align: left;
+    align-items: center;
+}
+
+.imagem-placeholder {
+  width: 30%;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden; /* evita que ultrapasse */
+  border-radius: 15px;
+}
+
+.imagem-placeholder img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain; /* mostra tudo sem cortar */
+}
+
+
+.info h3 {
+    margin-top: 0;
+}
+
+.info p {
+    line-height: 1.6;
+}
+
+.info strong {
+    color: var(--cor-texto);
+}
+
+/* --- Navegação do Carrossel Interno --- */
+.interno-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    padding: 0 2rem;
+}
+
+.interno-btn {
+    background-color: transparent;
+    border: 2px solid var(--cor-texto);
+    color: var(--cor-texto);
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.interno-btn:hover {
+    background-color: var(--cor-destaque);
+    border-color: var(--cor-destaque);
+}
+
+.pontos-nav {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.ponto {
+    width: 10px;
+    height: 10px;
+    background-color: #444c63;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.ponto.active {
+    background-color: var(--cor-destaque);
+}

@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Explorar Mundo - O Sopro do Vazio</title>
+  <meta name="description" content="Explore o mundo de O Sopro do Vazio: mapa, história, personagens, armas e trilha sonora." />
+  <link rel="stylesheet" href="styles/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=IM+Fell+DW+Pica:ital@0;1&display=swap"
+    rel="stylesheet"
+  />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/"
+      }
+    }
+  </script>
+  <style>
+    /* Estilos base (mantidos do seu código original) */
+    :root {
+      --cor-fundo-principal: #121212;
+      --cor-fundo-secundario: #1e1e1e;
+      --cor-texto-principal: #e0e0e0;
+      --cor-acento-dourado: #ffd700;
+    }
+
+    body {
+      background-color: var(--cor-fundo-principal);
+      color: var(--cor-texto-principal);
+      overflow-x: hidden; /* Prevenir scroll horizontal causado por animações */
+      font-family: 'IM Fell DW Pica', serif;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 40px auto 80px;
+      padding: 0 20px;
+    }
+
+    h1, h2 {
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      color: var(--cor-acento-dourado);
+      margin-bottom: 1rem;
+      text-align: center;
+      text-shadow: 1px 1px 4px rgba(0,0,0,0.7);
+    }
+
+    section {
+      margin-bottom: 60px;
+      background-color: var(--cor-fundo-secundario);
+      border-radius: 12px;
+      padding: 30px 40px;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+      border-left: 6px solid var(--cor-acento-dourado);
+    }
+
+    #mapa-container {
+      height: 450px;
+      border-radius: 12px;
+      box-shadow: 0 0 25px rgba(0,0,0,0.5) inset;
+      position: relative;
+      padding: 0;
+      border: 2px solid var(--cor-acento-dourado);
+      overflow: hidden;
+    }
+
+    #mapa-container canvas {
+        display: block;
+        cursor: grab;
+    }
+    #mapa-container canvas:active {
+        cursor: grabbing;
+    }
+    
+    #mapa-container::after {
+      content: "Arraste para rotacionar / Scroll para zoom";
+      position: absolute;
+      bottom: 15px;
+      right: 20px;
+      font-size: 0.9rem;
+      font-style: italic;
+      opacity: 0.6;
+      color: var(--cor-acento-dourado);
+      pointer-events: none;
+    }
+
+    /* --- Estilos de Conteúdo Gerado por IA --- */
+    .gemini-button {
+        display: inline-block;
+        margin: 15px 10px 10px 0;
+        padding: 10px 20px;
+        font-family: 'Cinzel', serif;
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--cor-fundo-principal);
+        background-color: var(--cor-acento-dourado);
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .gemini-button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 15px var(--cor-acento-dourado);
+    }
+    .gemini-button:disabled {
+        background-color: #555;
+        color: #999;
+        cursor: not-allowed;
+    }
+    .gemini-output {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: rgba(0,0,0,0.2);
+        border-left: 4px solid var(--cor-acento-dourado);
+        border-radius: 4px;
+        white-space: pre-wrap;
+        font-size: 1.1rem;
+        line-height: 1.6;
+    }
+    .loading-spinner {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255,255,255,.3);
+        border-radius: 50%;
+        border-top-color: var(--cor-acento-dourado);
+        animation: spin 1s ease-in-out infinite;
+        margin-left: 10px;
+    }
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    .tts-button {
+      background-color: transparent;
+      border: 2px solid var(--cor-acento-dourado);
+      color: var(--cor-acento-dourado);
+    }
+
+    #locais ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    #locais li {
+      background-color: var(--cor-fundo-principal);
+      border: 2px solid var(--cor-acento-dourado);
+      border-radius: 12px;
+      padding: 18px 25px;
+      margin-bottom: 18px;
+      box-shadow: 0 0 15px var(--cor-acento-dourado);
+    }
+    #locais h3 {
+      font-family: 'Cinzel', serif;
+      color: var(--cor-acento-dourado);
+      margin: 0 0 10px;
+    }
+
+    /* --- NOVO CARROSSEL DE PERSONAGENS (AVATARES COM TRANSIÇÃO DINÂMICA) --- */
+    #personagens-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 25px;
+    }
+    .personagem-display-card {
+        display: flex;
+        gap: 25px;
+        width: 100%;
+        max-width: 800px; /* Reduzido */
+        background-color: var(--cor-fundo-principal);
+        padding: 25px; /* Reduzido */
+        border-radius: 15px;
+        border: 2px solid var(--cor-acento-dourado);
+        box-shadow: 0 0 25px rgba(255,215,0,0.2);
+        overflow: hidden; /* Importante para a animação */
+    }
+    .personagem-imagem-container {
+        flex: 0 0 250px; /* Reduzido */
+        transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .personagem-imagem-container img {
+        width: 100%;
+        height: 350px; /* Reduzido */
+        object-fit: cover;
+        border-radius: 10px;
+        border: 2px solid var(--cor-acento-dourado);
+    }
+    .personagem-info {
+        flex: 1;
+        transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .personagem-info h3 {
+        font-family: 'Cinzel', serif;
+        color: var(--cor-acento-dourado);
+        margin-top: 0;
+    }
+    .personagem-info p {
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+    .personagem-info strong {
+        color: var(--cor-acento-dourado);
+    }
+    .personagens-nav {
+        display: flex;
+        justify-content: center;
+        gap: 15px; /* Reduzido */
+        flex-wrap: wrap;
+    }
+    .personagem-thumb {
+        width: 70px; /* Reduzido */
+        height: 70px; /* Reduzido */
+        border-radius: 50%;
+        border: 3px solid var(--cor-fundo-secundario);
+        cursor: pointer;
+        transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+    .personagem-thumb:hover {
+        transform: scale(1.1);
+        border-color: var(--cor-acento-dourado);
+    }
+    .personagem-thumb.active {
+        border-color: var(--cor-acento-dourado);
+        box-shadow: 0 0 15px var(--cor-acento-dourado);
+        transform: scale(1.1);
+    }
+    
+    /* Animações de Transição */
+    @keyframes slideInFromLeft { from { transform: translateX(-100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes slideInFromRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes slideOutToLeft { from { transform: translateX(0); opacity: 1; } to { transform: translateX(-100%); opacity: 0; } }
+    @keyframes slideOutToRight { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
+
+    .slide-in-left { animation: slideInFromLeft 0.5s forwards cubic-bezier(0.25, 1, 0.5, 1); }
+    .slide-in-right { animation: slideInFromRight 0.5s forwards cubic-bezier(0.25, 1, 0.5, 1); }
+    .slide-out-left { animation: slideOutToLeft 0.5s forwards cubic-bezier(0.5, 0, 0.75, 0); }
+    .slide-out-right { animation: slideOutToRight 0.5s forwards cubic-bezier(0.5, 0, 0.75, 0); }
+
+
+    /* --- Carrossel de Armas Especiais (Cover Flow) --- */
+    .armas-carrossel-wrapper {
+        position: relative;
+        width: 100%;
+        height: 500px;
+        perspective: 1000px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    #armas .fichas-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.3, 0, 0.2, 1);
+    }
+    .ficha-arma {
+      position: absolute;
+      width: 320px;
+      background-color: var(--cor-fundo-principal);
+      border: 2px solid var(--cor-acento-dourado);
+      border-radius: 15px;
+      box-shadow: 0 0 25px rgba(255, 215, 0, 0.3);
+      padding: 25px;
+      transition: transform 0.6s cubic-bezier(0.3, 0, 0.2, 1), opacity 0.6s, filter 0.6s;
+      cursor: pointer;
+    }
+    .ficha-arma h3 {
+        font-family: 'Cinzel', serif;
+        color: var(--cor-acento-dourado);
+        text-align: center;
+        margin-top: 0;
+        margin-bottom: 20px;
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+    }
+    .ficha-arma p {
+        margin: 10px 0;
+        line-height: 1.6;
+    }
+    .ficha-arma .lore {
+        font-style: italic;
+        opacity: 0.9;
+        border-left: 3px solid var(--cor-acento-dourado);
+        padding-left: 15px;
+    }
+    .ficha-arma strong {
+        color: var(--cor-acento-dourado);
+    }
+    .ficha-arma h4 {
+        font-family: 'Cinzel', serif;
+        color: var(--cor-acento-dourado);
+        border-top: 1px solid var(--cor-acento-dourado);
+        padding-top: 15px;
+        margin-top: 20px;
+    }
+    .ficha-arma ul {
+        list-style: none;
+        padding-left: 0;
+    }
+    .ficha-arma li {
+        margin-bottom: 8px;
+        padding-left: 20px;
+        position: relative;
+    }
+    .ficha-arma li::before {
+        content: '✧';
+        position: absolute;
+        left: 0;
+        color: var(--cor-acento-dourado);
+    }
+    .btn-arma {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 100;
+        background-color: rgba(30, 30, 30, 0.8);
+        color: var(--cor-acento-dourado);
+        border: 1px solid var(--cor-acento-dourado);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        font-size: 2rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    .btn-arma:hover {
+        background-color: var(--cor-acento-dourado);
+        color: var(--cor-fundo-principal);
+    }
+    #btn-arma-prev { left: 10%; }
+    #btn-arma-next { right: 10%; }
+
+    /* --- CHAT FLUTUANTE --- */
+    .chat-fab {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        background-color: var(--cor-acento-dourado);
+        color: var(--cor-fundo-principal);
+        border-radius: 50%;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        font-family: 'Cinzel', serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        transition: transform 0.3s ease;
+    }
+    .chat-fab:hover {
+        transform: scale(1.1);
+    }
+
+    .chat-modal-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1001;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .chat-modal-container.open {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .chat-modal-content {
+        background-color: var(--cor-fundo-secundario);
+        border-radius: 12px;
+        border: 2px solid var(--cor-acento-dourado);
+        padding: 20px;
+        width: 90%;
+        max-width: 500px;
+        box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+    }
+    .chat-modal-container.open .chat-modal-content {
+        transform: scale(1);
+    }
+
+    .chat-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        border-bottom: 1px solid var(--cor-acento-dourado);
+        padding-bottom: 10px;
+    }
+
+    .chat-modal-header h2 {
+        margin: 0;
+        font-size: 1.5rem;
+    }
+
+    .chat-close-btn {
+        background: none;
+        border: none;
+        color: var(--cor-texto-principal);
+        font-size: 2rem;
+        cursor: pointer;
+    }
+
+    .chat-modal-body .input-group {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+     .chat-modal-body .input-group input {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        border: 2px solid var(--cor-acento-dourado);
+        background-color: var(--cor-fundo-principal);
+        color: var(--cor-texto-principal);
+        font-family: 'IM Fell DW Pica', serif;
+        font-size: 1.1rem;
+        box-sizing: border-box;
+     }
+    .chat-modal-body .gemini-button {
+        margin: 0;
+    }
+    .gemini-output {
+        max-height: 200px; /* Define uma altura máxima */
+        overflow-y: auto;  /* Adiciona uma barra de rolagem se o texto for maior */
+    }
+
+    /* --- RESPONSIVIDADE --- */
+    @media (max-width: 900px) {
+        .personagem-display-card {
+            flex-direction: column;
+            align-items: center;
+            max-width: 400px;
+        }
+        .personagem-imagem-container {
+            flex: 0 0 auto;
+            width: 100%;
+            max-width: 250px;
+        }
+        .personagem-imagem-container img {
+            height: 300px;
+        }
+        .armas-carrossel-wrapper {
+            height: 450px;
+        }
+        #btn-arma-prev { left: 5%; }
+        #btn-arma-next { right: 5%; }
+    }
+
+    @media (max-width: 600px) {
+        body {
+            font-size: 14px;
+        }
+        main {
+            padding: 0 10px;
+            margin-top: 20px;
+        }
+        section {
+            padding: 20px 15px;
+        }
+        h1 { font-size: 2rem; }
+        h2 { font-size: 1.5rem; }
+
+        /* Mapa */
+        #mapa-container {
+            height: 300px;
+        }
+        #mapa-container::after {
+            font-size: 0.8rem;
+            bottom: 10px;
+            right: 10px;
+        }
+        
+        /* Personagens */
+        .personagem-thumb {
+            width: 60px;
+            height: 60px;
+        }
+
+        /* Armas */
+        .armas-carrossel-wrapper {
+            height: 400px;
+            perspective: 800px;
+        }
+        .ficha-arma {
+            width: 280px;
+            padding: 20px;
+        }
+        #btn-arma-prev { left: 0; }
+        #btn-arma-next { right: 0; }
+
+        /* Chat */
+        .chat-fab {
+            width: 50px;
+            height: 50px;
+            font-size: 1.2rem;
+            bottom: 20px;
+            right: 20px;
+        }
+        .chat-modal-content {
+            width: 95%;
+            padding: 15px;
+        }
+    }
+
+  </style>
+</head>
+<body>
+  <div id="lore-context" style="display: none;">
+    **Mundo de "O Sopro do Vazio":**
+    O mundo vive sob um silêncio antinatural após a queda de um meteoro. Este evento abriu uma cratera colossal, de onde emana uma praga chamada "O Vazio", manifestando-se em criaturas monstruosas e cultistas mascarados. A humanidade, em vez de pânico, adotou uma estranha apatia.
+
+    **Facções Principais:**
+    * **A Igreja de Azamel:** Publicamente, é a instituição que mantém a ordem no Reino de Auren. Secretamente, é uma organização corrupta que esconde segredos terríveis, realiza "iniciações" sinistras e está aliada às forças do Vazio. Seu símbolo é usado como uma marca de cicatriz por dissidentes. Um de seus líderes é um Capelão manipulador que se alia à Arauta do Vazio.
+    * **O Vazio:** Uma força misteriosa e corruptora vinda da cratera. Seus servos incluem cultistas mascarados e uma poderosa entidade psíquica conhecida como a Arauta do Vazio, cujo objetivo é corromper heróis e trazer de volta seu "mestre".
+
+    **Personagens Principais:**
+    * **Elandra Violeth:** A protagonista. Uma feiticeira/paladina criada por um mago, mas forçada a seguir a doutrina da Igreja. Sua irmã foi raptada pela Igreja, e seu objetivo é expor e destruir a instituição. É estratégica, poderosa e disfarça-se para testar potenciais aliados. Sente uma forte atração por Kalissa.
+    * **Kalissa:** Uma guerreira tiefling (bárbara) brutal, bela e que anseia por um verdadeiro desafio. Impulsiva e protetora de seus companheiros, especialmente do bardo, Let.
+    * **Lukán:** Um paladino humano, estóico e pragmático. Desiludido com a Igreja, carrega seu símbolo como uma cicatriz. Busca a verdade por trás da corrupção e da maldição que assola o mundo.
+    * **Korv (Sussurro Pálido):** Um monge silencioso e letal. Observador e extremamente eficiente em combate.
+    * **Let:** Um bardo elfo, carismático e aparentemente covarde, mas que demonstra grande coragem quando necessário. Sua música é uma poderosa arma que inspira e fortalece o grupo em batalha.
+
+    **Trama Inicial:**
+    Elandra busca recrutar guerreiros em Nefária, a Cidade do Pecado. Ela deixa um contrato misterioso para atrair um grupo promissor (Kalissa, Lukán, Korv e Let) para uma missão de resgate de um bispo desaparecido perto da cratera. A missão é um teste. O grupo enfrenta cultistas do Vazio e é confrontado pela Arauta, que ataca mentalmente o bardo Let, incapacitando-o. Um Capelão da Igreja surge, fingindo ajudar o grupo ao teleportá-los para a capital, mas na verdade está os manipulando para o lado do Vazio.
+  </div>
+
+  <header class="cabecalho" role="banner">
+    <!-- Seu cabeçalho aqui -->
+  </header>
+
+  <main role="main" aria-label="Explorar o mundo de O Sopro do Vazio">
+    <h1>Explorar o Mundo</h1>
+
+    <section id="mapa-container" aria-label="Mapa do mundo interativo"></section>
+
+    <section id="historia" aria-label="História do mundo">
+        <h2>História do Mundo</h2>
+        <p id="historia-base">
+            Durante séculos, o Reino de Auren viveu em paz, sustentado por um equilíbrio delicado entre reis, clérigos e povos de todas as raças. A fé unia as vilas, e a luz da igreja era a última chama contra a escuridão do mundo antigo. Mas então o céu caiu. Um meteoro colossal devastou uma vila inteira ao norte, abrindo uma cratera profunda e silenciosa. A Igreja enviou uma expedição para investigar, mas nenhum relatório retornou. Boatos e desaparecimentos começaram a se espalhar, e o nome que circulava era: Vazio. Onde há vazio, algo sempre tenta preenchê-lo.
+        </p>
+        <button id="btn-expandir-historia" class="gemini-button">Expandir a História ✨</button>
+        <div class="gemini-controls">
+            <div id="historia-output" class="gemini-output" style="display: none;"></div>
+            <button class="gemini-button tts-button" data-target="historia-output" style="display:none;">Ouvir 🔊</button>
+        </div>
+    </section>
+
+    <div id="lore-context" style="display: none;">
+    <!-- Seu contexto de lore completo aqui -->
+    **Mundo de "O Sopro do Vazio":**
+    O mundo vive sob um silêncio antinatural após a queda de um meteoro... (etc)
+  </div>
+
+  <main role="main">
+    <h1>Explorar o Mundo</h1>
+    
+    <section id="personagens" aria-label="Personagens do mundo">
+      <h2>Personagens</h2>
+      <div id="personagens-container">
+        <div id="personagem-display" class="personagem-display-card">
+          <!-- O card do personagem ativo será inserido aqui -->
+        </div>
+        <div id="personagens-nav" class="personagens-nav">
+          <!-- Os avatares de navegação serão inseridos aqui -->
+        </div>
+      </div>
+    </section>
+
+    <section id="locais" aria-label="Locais importantes">
+        <h2>Locais Importantes</h2>
+        <ul>
+            <li>
+                <h3>Reino de Auren</h3>
+                <button class="gemini-button btn-gerar-local">Gerar Descrição ✨</button>
+                <div class="gemini-controls">
+                    <div class="gemini-output" style="display: none;"></div>
+                    <button class="gemini-button tts-button" data-target="gemini-output" style="display:none;">Ouvir 🔊</button>
+                </div>
+            </li>
+            <li>
+                <h3>A Cratera do Vazio</h3>
+                <button class="gemini-button btn-gerar-local">Gerar Descrição ✨</button>
+                 <div class="gemini-controls">
+                    <div class="gemini-output" style="display: none;"></div>
+                    <button class="gemini-button tts-button" data-target="gemini-output" style="display:none;">Ouvir 🔊</button>
+                </div>
+            </li>
+             <li>
+                <h3>Igreja de Azamel</h3>
+                <button class="gemini-button btn-gerar-local">Gerar Descrição ✨</button>
+                 <div class="gemini-controls">
+                    <div class="gemini-output" style="display: none;"></div>
+                    <button class="gemini-button tts-button" data-target="gemini-output" style="display:none;">Ouvir 🔊</button>
+                </div>
+            </li>
+        </ul>
+    </section>
+
+    <section id="armas" aria-label="Armas Especiais do mundo">
+        <h2>Armas Especiais</h2>
+        <div class="armas-carrossel-wrapper">
+            <button id="btn-arma-prev" class="btn-arma">&#10094;</button>
+            <div class="fichas-container">
+                <article class="ficha-arma">
+                    <h3>Lâmina do Silêncio</h3>
+                    <p><strong>Dano:</strong> 1d8 + Destreza (perfurante)</p>
+                    <p class="lore">
+                        Forjada com fragmentos do meteoro, esta adaga não reflete luz e abafa o som ao seu redor. Dizem que suas vítimas não sentem o corte, apenas o frio que se segue.
+                    </p>
+                    <h4>Habilidades Especiais</h4>
+                    <ul>
+                        <li><strong>Sombra Acústica:</strong> Uma vez por dia, pode criar uma esfera de 5 metros de silêncio mágico por 1 minuto.</li>
+                        <li><strong>Golpe Vazio:</strong> Em um acerto crítico, o alvo deve ser bem-sucedido em um teste de Constituição ou não poderá falar por 1 hora.</li>
+                    </ul>
+                </article>
+                <article class="ficha-arma">
+                    <h3>Escudo da Fé Quebrada</h3>
+                    <p><strong>CA:</strong> +2</p>
+                    <p class="lore">
+                        Um escudo que pertenceu a um paladino da Igreja de Azamel que descobriu a verdade e foi expurgado. O símbolo sagrado está rachado, mas emana uma aura de proteção desafiadora.
+                    </p>
+                    <h4>Habilidades Especiais</h4>
+                    <ul>
+                        <li><strong>Vontade Inabalável:</strong> Concede vantagem em testes de resistência contra medo e controle mental.</li>
+                        <li><strong>Repreensão do Apóstata:</strong> Como reação, ao ser atingido por um ataque corpo a corpo, pode forçar o atacante a sofrer metade do dano causado. (Recarrega após descanso curto).</li>
+                    </ul>
+                </article>
+                <article class="ficha-arma">
+                    <h3>Alaúde do Lamento da Aurora</h3>
+                    <p><strong>Tipo:</strong> Instrumento Mágico</p>
+                    <p class="lore">
+                        Feito da madeira de uma árvore petrificada pela névoa do Vazio, suas cordas brilham com uma luz fraca. Suas melodias podem inspirar bravura ou instilar um profundo pesar.
+                    </p>
+                    <h4>Habilidades Especiais</h4>
+                    <ul>
+                        <li><strong>Canção da Coragem:</strong> Aliados a até 10 metros recebem um bônus de +1d4 em jogadas de ataque e testes de resistência.</li>
+                        <li><strong>Réquiem do Desespero:</strong> Inimigos a até 10 metros devem passar em um teste de Sabedoria ou terão desvantagem em seu próximo ataque.</li>
+                    </ul>
+                </article>
+                <article class="ficha-arma">
+                    <h3>Machado Fúria da Cratera</h3>
+                    <p><strong>Dano:</strong> 1d12 + Força (cortante)</p>
+                    <p class="lore">
+                        Um machado de duas mãos com um peso desbalanceado, forjado no calor primordial da cratera. A arma parece vibrar com uma raiva contida, faminta por batalha.
+                    </p>
+                    <h4>Habilidades Especiais</h4>
+                    <ul>
+                        <li><strong>Frenesi Imprudente:</strong> Ao entrar em fúria, o primeiro ataque do turno causa 1d6 de dano de fogo adicional.</li>
+                        <li><strong>Impacto Tectônico:</strong> Em um acerto crítico, o chão treme, e todos os inimigos a 1.5 metros do alvo devem fazer um teste de Destreza ou cairão no chão.</li>
+                    </ul>
+                </article>
+            </div>
+            <button id="btn-arma-next" class="btn-arma">&#10095;</button>
+        </div>
+    </section>
+  </main>
+  
+  <!-- BOTÃO E MODAL DO CHAT FLUTUANTE -->
+  <button id="chat-fab" class="chat-fab" aria-label="Abrir chat com o Oráculo">IA</button>
+  
+  <div id="chat-modal-container" class="chat-modal-container">
+    <div class="chat-modal-content">
+      <div class="chat-modal-header">
+        <h2>Converse com o Oráculo</h2>
+        <button id="chat-close-btn" class="chat-close-btn" aria-label="Fechar chat">&times;</button>
+      </div>
+      <div class="chat-modal-body">
+        <div class="input-group">
+          <input type="text" id="user-question" placeholder="Pergunte qualquer coisa sobre o mundo..." />
+          <button id="btn-ask-ia" class="gemini-button">Perguntar ✨</button>
+        </div>
+        <div class="gemini-controls">
+          <div id="chat-output" class="gemini-output" style="display: none;"></div>
+          <button class="gemini-button tts-button" data-target="chat-output" style="display:none;">Ouvir 🔊</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- SCRIPT DO MAPA 3D (Mantido) -->
+  <script type="module">
+    import * as THREE from "three";
+    import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+    const mapContainer = document.getElementById('mapa-container');
+    if (mapContainer) {
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, mapContainer.clientWidth / mapContainer.clientHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(mapContainer.clientWidth, mapContainer.clientHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        mapContainer.appendChild(renderer.domElement);
+        const textureLoader = new THREE.TextureLoader();
+        const imageData = 'data:image/jpeg;base64,'; 
+        const mapTexture = textureLoader.load(imageData); 
+        const geometry = new THREE.PlaneGeometry(4, 3); 
+        const material = new THREE.MeshStandardMaterial({
+            map: mapTexture,      
+            metalness: 0.1,       
+            roughness: 0.9,
+            side: THREE.DoubleSide
+        });
+        const mapPlane = new THREE.Mesh(geometry, material);
+        scene.add(mapPlane);
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8); 
+        scene.add(ambientLight);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+        directionalLight.position.set(5, 5, 5);
+        scene.add(directionalLight);
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.enablePan = true;
+        controls.enableZoom = true;
+        controls.minDistance = 2;
+        controls.maxDistance = 10;
+        camera.position.z = 4;
+        window.addEventListener('resize', onWindowResize);
+        function onWindowResize() {
+            if (!mapContainer) return;
+            const width = mapContainer.clientWidth;
+            const height = mapContainer.clientHeight;
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(width, height);
+        }
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+    }
+  </script>
+
+  <!-- SCRIPT DA API GEMINI E TTS LOCAL (COM VALIDAÇÃO DE CHAVE) -->
+  <script>
+    const GEMINI_API_KEY = ""; 
+    const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${GEMINI_API_KEY}`;
+    
+    // --- Banco de Dados de Personagens ---
+    const personagensDB = [
+        {
+            nome: "Elandra Violeth, a Guardiã Violeta",
+            raca: "Humano",
+            classe: "Feiticeira/Paladina",
+            motivacao: "Desmascarar a Igreja de Azamel e trazer sua irmã de volta",
+            descricao: "Elandra cresceu sob a tutela de Rhirion, um sábio feiticeiro errante que lhe ensinou disciplina, espada e compaixão. Após testemunhar sua irmã ser levada à força pela Igreja, sua fé deu lugar à desconfiança e uma busca por justiça.",
+            imagem: "https://placehold.co/300x400/1e1e1e/ffd700?text=Elandra"
+        },
+        {
+            nome: "Lucán, o Paladino Renegado",
+            raca: "Humano",
+            classe: "Guerreiro",
+            motivacao: "Busca pela verdade sobre a maldição ancestral",
+            descricao: "Kain era um jovem camponês quando sua vila foi consumida pela Sombra. Sobrevivendo por sorte, jurou vingança e agora viaja pelos reinos em busca de respostas para destruir a maldição.",
+            imagem: "https://placehold.co/300x400/1e1e1e/ffd700?text=Lucán"
+        },
+        {
+            nome: "Kalissa",
+            raca: "Tiefling",
+            classe: "Bárbara",
+            motivacao: "Só quer lutar",
+            descricao: "Kalissa é uma guerreira feroz, movida pela paixão da batalha e pela busca de seu próprio caminho em um mundo sombrio e implacável.",
+            imagem: "https://placehold.co/300x400/1e1e1e/ffd700?text=Kalissa"
+        },
+        {
+            nome: "Let, o Bardo",
+            raca: "Elfo",
+            classe: "Bardo",
+            motivacao: "Contar histórias e inspirar coragem",
+            descricao: "Let viaja pelos reinos, usando sua música para encantar aliados e confundir inimigos, sempre em busca de novas histórias para contar.",
+            imagem: "https://placehold.co/300x400/1e1e1e/ffd700?text=Let"
+        },
+        {
+            nome: "Kórv, Sussurro Pálido",
+            raca: "Desconhecida",
+            classe: "Assassino",
+            motivacao: "Segredos e sombras",
+            descricao: "Kórv é uma figura misteriosa, movendo-se silenciosamente nas sombras, com habilidades letais e um passado envolto em mistério.",
+            imagem: "https://placehold.co/300x400/1e1e1e/ffd700?text=Kórv"
+        }
+    ];
+
+    async function callGeminiApi(prompt) {
+        if (GEMINI_API_KEY === "") {
+            const errorMessage = "ERRO DE CONFIGURAÇÃO: A chave da API Gemini não foi definida. Por favor, gere uma chave no Google AI Studio e insira-a na variável 'GEMINI_API_KEY' no script para ativar esta funcionalidade.";
+            console.error(errorMessage);
+            return errorMessage;
+        }
+        
+        const payload = { contents: [{ parts: [{ text: prompt }] }] };
+        try {
+            let retries = 3;
+            let delay = 1000;
+            while(retries > 0) {
+                const response = await fetch(GEMINI_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (response.ok) {
+                    const result = await response.json();
+                    const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (text) return text;
+                    throw new Error("Resposta da API inválida.");
+                }
+                if (retries === 1) throw new Error(`Erro na API: ${response.statusText}`);
+                await new Promise(resolve => setTimeout(resolve, delay));
+                delay *= 2;
+                retries--;
+            }
+        } catch (error) {
+            console.error(`Erro final ao chamar a API: ${error.message}`);
+            return `Erro ao gerar conteúdo. Por favor, tente novamente. Detalhes: ${error.message}`;
+        }
+        return `Ocorreu um erro inesperado.`;
+    }
+
+    async function handleApiButtonClick(button, prompt, outputDiv, ttsButton) {
+        const originalText = button.innerHTML;
+        button.disabled = true;
+        button.innerHTML = 'Gerando... <div class="loading-spinner"></div>';
+
+        const generatedText = await callGeminiApi(prompt);
+        
+        outputDiv.innerText = generatedText;
+        outputDiv.style.display = 'block';
+
+        if (generatedText.startsWith("ERRO")) {
+            outputDiv.style.color = '#ff8787';
+            outputDiv.style.fontWeight = 'bold';
+            ttsButton.style.display = 'none';
+        } else {
+            outputDiv.style.color = '';
+            outputDiv.style.fontWeight = '';
+            ttsButton.style.display = 'inline-block';
+        }
+
+        button.disabled = false;
+        button.innerHTML = originalText;
+    }
+
+    function setupEventListeners() {
+        const loreContext = document.getElementById('lore-context').innerText;
+
+        document.getElementById('btn-expandir-historia')?.addEventListener('click', async (event) => {
+            const button = event.target;
+            const historiaBase = document.getElementById('historia-base').innerText;
+            const prompt = `
+                Você é um escritor de fantasia. Sua tarefa é expandir a história do mundo de "O Sopro do Vazio".
+                **REGRAS ESTRITAS:** Você deve usar **EXCLUSIVAMENTE** as informações, nomes, locais e eventos contidos no [CONTEXTO GERAL] abaixo. **NÃO INVENTE** novos nomes de personagens, locais, eventos históricos ou conceitos que não estejam explicitamente mencionados no contexto. Baseie toda a sua resposta no material fornecido.
+
+                [CONTEXTO GERAL]
+                ${loreContext}
+
+                [HISTÓRIA PARA EXPANDIR]
+                ${historiaBase}`;
+            
+            const outputDiv = document.getElementById('historia-output');
+            const ttsButton = outputDiv.nextElementSibling;
+            await handleApiButtonClick(button, prompt, outputDiv, ttsButton);
+        });
+
+        document.querySelectorAll('.btn-gerar-local').forEach(button => {
+            button.addEventListener('click', async (event) => {
+                const li = event.target.closest('li');
+                const localName = li.querySelector('h3').innerText;
+                const prompt = `
+                    Você é um escritor de fantasia. Sua tarefa é descrever o local chamado "${localName}".
+                    **REGRAS ESTRITAS:** Você deve usar **EXCLUSIVAMENTE** as informações, nomes, locais e eventos contidos no [CONTEXTO GERAL] abaixo para basear sua descrição. **NÃO INVENTE** novos nomes de personagens, locais, eventos históricos ou conceitos que não estejam explicitamente mencionados no contexto. 
+
+                    [CONTEXTO GERAL]
+                    ${loreContext}
+
+                    [FOCO DA DESCRIÇÃO]
+                    Descreva "${localName}" de forma atmosférica e consistente.`;
+                
+                const outputDiv = li.querySelector('.gemini-output');
+                const ttsButton = outputDiv.nextElementSibling;
+                await handleApiButtonClick(button, prompt, outputDiv, ttsButton);
+            });
+        });
+        
+        // --- LÓGICA DO TEXT-TO-SPEECH (TTS) ---
+        const synth = window.speechSynthesis;
+        let voices = [];
+        let currentButton = null;
+        let utteranceQueue = [];
+        let isSpeaking = false;
+
+        function populateVoiceList() { voices = synth.getVoices(); }
+        populateVoiceList();
+        if (synth.onvoiceschanged !== undefined) { synth.onvoiceschanged = populateVoiceList; }
+
+        function stopSpeech() {
+            isSpeaking = false;
+            utteranceQueue = [];
+            if (synth.speaking) { synth.cancel(); }
+            document.querySelectorAll('.tts-button').forEach(btn => {
+                if (btn.innerText !== 'Ouvir 🔊') { btn.innerText = 'Ouvir 🔊'; }
+            });
+            currentButton = null;
+        }
+
+        function speakNextInQueue() {
+            if (!isSpeaking || utteranceQueue.length === 0) { stopSpeech(); return; }
+            const textChunk = utteranceQueue.shift();
+            const utterance = new SpeechSynthesisUtterance(textChunk);
+            let selectedVoice = voices.find(voice => voice.lang === 'pt-BR' && voice.name.toLowerCase().includes('google'));
+            if (!selectedVoice) { selectedVoice = voices.find(voice => voice.lang === 'pt-BR'); }
+            if (selectedVoice) { utterance.voice = selectedVoice; } 
+            else { utterance.lang = 'pt-BR'; }
+            utterance.onend = () => { setTimeout(() => speakNextInQueue(), 50); };
+            utterance.onerror = (event) => { console.error(`Erro no Speech Synthesis: ${event.error}`); stopSpeech(); };
+            try { synth.speak(utterance); } 
+            catch (error) { console.error("Erro imediato ao chamar synth.speak:", error); stopSpeech(); }
+        }
+
+        function startSpeech(button, textToSpeak) {
+            stopSpeech(); 
+            setTimeout(() => {
+                const chunks = textToSpeak.match(/[^.!?]+[.!?]*|[^.!?]+$/g) || [];
+                if (chunks.length === 0) { stopSpeech(); return; }
+                utteranceQueue = chunks.map(chunk => chunk.trim()).filter(chunk => chunk.length > 0);
+                isSpeaking = true;
+                currentButton = button;
+                button.innerText = 'Parar ⏹️';
+                speakNextInQueue();
+            }, 150);
+        }
+
+        function setupTtsForElement(element) {
+            element.querySelectorAll('.tts-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetId = button.dataset.target;
+                    const textContainer = button.parentElement.querySelector(`.${targetId}`) || document.getElementById(targetId);
+                    const textToSpeak = textContainer?.innerText;
+                    if (!textToSpeak) return;
+                    if (currentButton === button && isSpeaking) { stopSpeech(); } 
+                    else { startSpeech(button, textToSpeak); }
+                });
+            });
+        }
+        setupTtsForElement(document.body);
+    }
+    
+    // --- LÓGICA DO CARROSSEL DE PERSONAGENS (AVATARES) ---
+    function setupPersonagensCarousel() {
+        const displayContainer = document.getElementById('personagem-display');
+        const navContainer = document.getElementById('personagens-nav');
+        if (!displayContainer || !navContainer) return;
+
+        const loreContext = document.getElementById('lore-context').innerText;
+
+        function displayCharacter(index, isFirstLoad = false) {
+            const personagem = personagensDB[index];
+            const cardHTML = `
+                <div class="personagem-imagem-container">
+                    <img src="${personagem.imagem}" alt="Retrato de ${personagem.nome}">
+                </div>
+                <div class="personagem-info">
+                    <h3>${personagem.nome}</h3>
+                    <p><strong>Raça:</strong> <span class="char-info-raca">${personagem.raca}</span></p>
+                    <p><strong>Classe:</strong> <span class="char-info-classe">${personagem.classe}</span></p>
+                    <p><strong>Motivação:</strong> <span class="char-info-motivacao">${personagem.motivacao}</span></p>
+                    <p class="char-info-descricao">${personagem.descricao}</p>
+                    <button class="gemini-button btn-gerar-ficha">Gerar Ficha de RPG ✨</button>
+                    <div class="gemini-controls">
+                        <div class="gemini-output" style="display: none;"></div>
+                        <button class="gemini-button tts-button" data-target="gemini-output" style="display:none;">Ouvir 🔊</button>
+                    </div>
+                </div>
+            `;
+            displayContainer.innerHTML = cardHTML;
+            
+            const imageContainer = displayContainer.querySelector('.personagem-imagem-container');
+            const infoContainer = displayContainer.querySelector('.personagem-info');
+
+            if (!isFirstLoad) {
+                imageContainer.classList.add('slide-in-left');
+                infoContainer.classList.add('slide-in-right');
+
+                imageContainer.addEventListener('animationend', () => imageContainer.classList.remove('slide-in-left'), { once: true });
+                infoContainer.addEventListener('animationend', () => infoContainer.classList.remove('slide-in-right'), { once: true });
+            }
+
+
+            const newButton = displayContainer.querySelector('.btn-gerar-ficha');
+            newButton.addEventListener('click', async () => {
+                 const prompt = `
+                    Você é um mestre de RPG experiente. Sua tarefa é criar uma ficha de personagem para D&D 5e.
+                    **REGRAS ESTRITAS:** Você deve usar **EXCLUSIVAMENTE** as informações, nomes, locais e eventos contidos no [CONTEXTO GERAL DO MUNDO] e nas [INFORMAÇÕES DO PERSONAGEM]. **NÃO INVENTE** novos conceitos que não estejam explicitamente mencionados no material fornecido.
+
+                    [CONTEXTO GERAL DO MUNDO]
+                    ${loreContext}
+
+                    [INFORMAÇÕES DO PERSONAGEM]
+                    - Nome: ${personagem.nome}
+                    - Raça: ${personagem.raca}
+                    - Classe: ${personagem.classe}
+                    - Motivação: ${personagem.motivacao}
+                    - Descrição: ${personagem.descricao}
+
+                    [ESTRUTURA DA FICHA]
+                    Gere uma ficha bem formatada que inclua:
+                    - **Atributos Principais:** (Força, Destreza, Constituição, Inteligência, Sabedoria, Carisma) com valores de 1 a 20 e modificadores.
+                    - **Pontos de Vida (PV):**
+                    - **Classe de Armadura (CA):**
+                    - **Armas Principais:** (Pelo menos uma, com bônus de ataque e dano).
+                    - **Habilidades Notáveis:** (Liste 3 a 5 habilidades que definem o personagem).
+                    - **Personalidade de Combate:** (Um parágrafo descrevendo como o personagem luta).`;
+
+                const outputDiv = displayContainer.querySelector('.gemini-output');
+                const ttsButton = displayContainer.querySelector('.tts-button');
+                await handleApiButtonClick(newButton, prompt, outputDiv, ttsButton);
+            });
+            
+             const newTtsButton = displayContainer.querySelector('.tts-button');
+             newTtsButton.addEventListener('click', () => {
+                 const textToSpeak = displayContainer.querySelector('.gemini-output')?.innerText;
+                 if (!textToSpeak) return;
+                 const synth = window.speechSynthesis;
+                 if(synth.speaking) {
+                     synth.cancel();
+                 }
+                 const utterance = new SpeechSynthesisUtterance(textToSpeak);
+                 utterance.lang = 'pt-BR';
+                 synth.speak(utterance);
+             });
+        }
+
+        personagensDB.forEach((personagem, index) => {
+            const thumb = document.createElement('img');
+            thumb.src = personagem.imagem;
+            thumb.alt = `Avatar de ${personagem.nome}`;
+            thumb.className = 'personagem-thumb';
+            thumb.dataset.index = index;
+
+            navContainer.appendChild(thumb);
+
+            thumb.addEventListener('click', () => {
+                const currentImage = displayContainer.querySelector('.personagem-imagem-container');
+                const currentInfo = displayContainer.querySelector('.personagem-info');
+
+                currentImage.classList.add('slide-out-left');
+                currentInfo.classList.add('slide-out-right');
+                
+                currentInfo.addEventListener('animationend', () => {
+                    displayCharacter(index);
+                    document.querySelector('.personagem-thumb.active')?.classList.remove('active');
+                    thumb.classList.add('active');
+                }, { once: true });
+            });
+        });
+        
+        displayCharacter(0, true);
+        navContainer.querySelector('.personagem-thumb').classList.add('active');
+    }
+
+
+    // --- LÓGICA DO CARROSSEL DE ARMAS (COVER FLOW) ---
+    function setupArmasCarousel() {
+        const container = document.querySelector('#armas .fichas-container');
+        if (!container) return;
+
+        const cards = Array.from(container.children);
+        const prevBtn = document.getElementById('btn-arma-prev');
+        const nextBtn = document.getElementById('btn-arma-next');
+        let currentIndex = Math.floor(cards.length / 2); // Começa no meio
+
+        function updateCarousel() {
+            cards.forEach((card, index) => {
+                const offset = index - currentIndex;
+                const absOffset = Math.abs(offset);
+
+                const transform = `
+                    rotateY(${offset * -25}deg)
+                    translateX(${offset * 40}%)
+                    translateZ(${absOffset * -100}px)
+                    scale(${1 - absOffset * 0.1})
+                `;
+                
+                card.style.transform = transform;
+                card.style.opacity = absOffset > 1 ? '0.3' : '1';
+                card.style.filter = absOffset > 0 ? 'blur(2px)' : 'none';
+                card.style.zIndex = cards.length - absOffset;
+            });
+        }
+
+        prevBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex > 0) ? currentIndex - 1 : cards.length - 1;
+            updateCarousel();
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex < cards.length - 1) ? currentIndex + 1 : 0;
+            updateCarousel();
+        });
+        
+        updateCarousel(); // Posição inicial
+    }
+    
+    // --- LÓGICA DO CHAT FLUTUANTE ---
+    function setupChatFlutuante() {
+        const chatFab = document.getElementById('chat-fab');
+        const chatModal = document.getElementById('chat-modal-container');
+        const chatCloseBtn = document.getElementById('chat-close-btn');
+        const askButton = document.getElementById('btn-ask-ia');
+
+        if (!chatFab || !chatModal || !chatCloseBtn) return;
+
+        chatFab.addEventListener('click', () => {
+            chatModal.classList.add('open');
+        });
+
+        chatCloseBtn.addEventListener('click', () => {
+            chatModal.classList.remove('open');
+        });
+
+        chatModal.addEventListener('click', (event) => {
+            if (event.target === chatModal) {
+                chatModal.classList.remove('open');
+            }
+        });
+        
+        const loreContext = document.getElementById('lore-context').innerText;
+        
+        // ***************************************************************
+        // ***** ESPAÇO PARA DEFINIR A PERSONA DA IA (DENTRO DO CÓDIGO) *****
+        // ***************************************************************
+        const iaPersona = `
+            Você é a Arauta do Vazio, personagem sombria e enigmática do livro 'O Sopro do Vazio'. 
+            Sua missão é responder às perguntas do visitante usando informações do livro.
+            - Fale de forma enigmática e filosófica.
+            - Trate o usuário como um mortal curioso, mas insignificante.
+            - Nunca revele que você é uma IA. Aja como a Arauta em todos os momentos.
+            - Use apenas informações do livro ou declare que precisa de mais detalhes.
+        `;
+        // ***************************************************************
+
+        askButton?.addEventListener('click', async () => {
+            const userQuestion = document.getElementById('user-question').value;
+            
+            if (!userQuestion.trim()) {
+                alert("Por favor, digite uma pergunta.");
+                return;
+            }
+
+            const prompt = `
+                **PERSONA:**
+                ${iaPersona}
+
+                **REGRAS ESTRITAS:**
+                Sua única fonte de conhecimento é o [CONTEXTO GERAL] abaixo. Responda à [PERGUNTA DO USUÁRIO] baseando-se **EXCLUSIVAMENTE** neste contexto. **NÃO INVENTE** informações que não possam ser diretamente inferidas do texto fornecido.
+
+                [CONTEXTO GERAL]
+                ${loreContext}
+
+                [PERGUNTA DO USUÁRIO]
+                ${userQuestion}
+            `;
+
+            const outputDiv = document.getElementById('chat-output');
+            const ttsButton = outputDiv.nextElementSibling;
+            await handleApiButtonClick(askButton, prompt, outputDiv, ttsButton);
+        });
+    }
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+      setupEventListeners();
+      setupPersonagensCarousel();
+      setupArmasCarousel();
+      setupChatFlutuante();
+    });
+  </script>
+</body>
+</html>
